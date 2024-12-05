@@ -1,0 +1,247 @@
+\documentclass[11pt]{article}
+\usepackage[hmargin=1in,vmargin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb,amsfonts,url,sectsty,framed,tcolorbox,framed}
+\newcommand{\demonstration}{{\emph{Proof: }}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newcommand{\qedsymbol}{\hfill \rule{2mm}{2mm}}
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent
+\rule{\textwidth}{1pt}
+\begin{center}
+{\bf [CS309] Foundations of Cryptography and Security Networks}
+\end{center}
+Instructor: Dr. Dibyendu Roy \hfill Autumn Semester 2024\\
+Notes by: Tanuj Saini (202251141) \hfill Week 5 Lecture
+\\
+\rule{\textwidth}{1pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Start here
+
+
+
+\section{Introduction to Polynomial and Field Theory in Cryptography}
+
+Polynomial and field theory form the cornerstone of numerous algebraic structures, particularly in the domain of finite fields. These mathematical constructs play a pivotal role in contemporary cryptographic systems, providing the foundation for secure communication protocols and encryption algorithms.
+
+\subsection{Irreducible Polynomials}
+
+\begin{definition}[Irreducible Polynomial]
+A polynomial $P(x) \in F[x]$ of degree $n \neq 1$ is termed irreducible if it cannot be factored into the product of two non-constant polynomials in $F[x]$. Formally, if $P(x) = P_1(x) \cdot P_2(x)$, then either $P_1(x)$ or $P_2(x)$ must be a constant.
+\end{definition}
+
+\begin{example}
+The polynomial $P(x) = x^2 + 1$ is irreducible over $\mathbb{R}[x]$, but reducible over $\mathbb{C}[x]$, as $x^2 + 1 = (x + i)(x - i)$ in $\mathbb{C}[x]$.
+\end{example}
+
+Irreducible polynomials are fundamental in the construction of finite fields, also known as Galois fields. For instance, the field $\mathbb{F}_{2^n}$ can be constructed using an irreducible polynomial of degree $n$ over $\mathbb{F}_2$.
+
+\begin{theorem}
+Let $P(x)$ be an irreducible polynomial over a field $F$. Then:
+\begin{enumerate}
+    \item $I = \langle P(x) \rangle = \{q(x) \cdot P(x) \mid q(x) \in F[x]\}$ defines an ideal in the ring $F[x]$.
+    \item The quotient $F[x]/\langle P(x) \rangle$ forms a field.
+\end{enumerate}
+\end{theorem}
+
+\subsection{Polynomial Arithmetic}
+
+\subsubsection{Multiplication}
+
+Polynomial multiplication is a fundamental operation in cryptographic algorithms. Consider the following example:
+
+\begin{equation*}
+    \begin{split}
+        p(x) \cdot (x^2 + x + 1) &= (x + 1) \cdot (x + 1) \\
+        &= (x + 1)(x + 1)x + (x + 1)x^2 + x^3 \\
+        &= x^4 + x^3 + x^2 + x = 1 + x^3
+    \end{split}
+\end{equation*}
+
+This exemplifies polynomial arithmetic within a ring structure, which is crucial in algebra and its applications to coding theory and cryptography.
+
+\subsubsection{Division}
+
+\begin{theorem}[Polynomial Division]
+For any polynomial $q(x)$ in $F[x]$, there exist unique polynomials $d(x)$ and $r(x)$ such that:
+\[ q(x) = d(x) \cdot P(x) + r(x) \]
+where $\deg(r(x)) < \deg(P(x))$.
+\end{theorem}
+
+This theorem forms the basis for division in polynomial rings and is essential for algorithms like the Euclidean algorithm used to compute greatest common divisors.
+
+\begin{algorithm}
+\caption{Euclidean Algorithm for Polynomials}
+\begin{algorithmic}[1]
+\Procedure{PolynomialGCD}{$a(x), b(x)$}
+    \While{$b(x) \neq 0$}
+        \State $r(x) \gets a(x) \bmod b(x)$
+        \State $a(x) \gets b(x)$
+        \State $b(x) \gets r(x)$
+    \EndWhile
+    \State \textbf{return} $a(x)$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\section{Finite Fields in Cryptography}
+
+Finite fields, particularly $\mathbb{F}_{2^n}$, are extensively used in cryptography due to their properties that facilitate efficient computation and provide security.
+
+\subsection{Construction of $\mathbb{F}_{2^n}$}
+
+To construct $\mathbb{F}_{2^n}$, we use an irreducible polynomial of degree $n$ over $\mathbb{F}_2$. For example, to construct $\mathbb{F}_{2^8}$, which is used in AES, we can use the irreducible polynomial:
+
+\[ P(x) = x^8 + x^4 + x^3 + x + 1 \]
+
+\begin{lemma}
+The polynomial $x^8 + x^4 + x^3 + x + 1$ is irreducible over $\mathbb{F}_2$.
+\end{lemma}
+
+Elements of $\mathbb{F}_{2^8}$ can be represented as polynomials of degree less than 8 with coefficients in $\mathbb{F}_2$, modulo $P(x)$.
+
+\section{Advanced Encryption Standard (AES)}
+
+The Advanced Encryption Standard (AES) is a symmetric block cipher algorithm widely adopted for secure data encryption. Established by the U.S. National Institute of Standards and Technology (NIST) in 2001, AES replaced the older Data Encryption Standard (DES).
+
+\subsection{AES Variants}
+
+AES supports three key sizes, each with a fixed block size of 128 bits:
+
+\begin{tcolorbox}
+\begin{itemize}
+    \item \textbf{AES-128}: 128-bit key, 10 rounds
+    \item \textbf{AES-192}: 192-bit key, 12 rounds
+    \item \textbf{AES-256}: 256-bit key, 14 rounds
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{State Representation}
+
+In AES, the 128-bit block is represented as a 4x4 matrix of bytes, called the state:
+
+\[
+\begin{bmatrix}
+s_{0,0} & s_{0,1} & s_{0,2} & s_{0,3} \\
+s_{1,0} & s_{1,1} & s_{1,2} & s_{1,3} \\
+s_{2,0} & s_{2,1} & s_{2,2} & s_{2,3} \\
+s_{3,0} & s_{3,1} & s_{3,2} & s_{3,3}
+\end{bmatrix}
+\]
+
+\subsection{Round Structure}
+
+Each AES round consists of several operations:
+
+\begin{enumerate}
+    \item \textbf{SubBytes}: Non-linear substitution using an S-box
+    \item \textbf{ShiftRows}: Cyclic shifting of state rows
+    \item \textbf{MixColumns}: Column mixing (omitted in final round)
+    \item \textbf{AddRoundKey}: XOR with round key
+\end{enumerate}
+
+\subsubsection{SubBytes Operation}
+
+The SubBytes step provides non-linearity in the cipher. It operates on each byte of the state independently, using an S-box derived from the multiplicative inverse over $\mathbb{F}_{2^8}$, followed by an affine transformation.
+
+Let $x = \langle C_7, C_6, C_5, C_4, C_3, C_2, C_1, C_0 \rangle$ be an 8-bit input. The S-box transformation is denoted as:
+
+\[ S(C_7C_6C_5C_4C_3C_2C_1C_0) = \text{8-bit output} \]
+
+The S-box is constructed as follows:
+
+\begin{enumerate}
+    \item For each byte $b$, compute its multiplicative inverse in $\mathbb{F}_{2^8}$: $b^{-1}$
+    \item Apply the affine transformation:
+    \[ b' = Ab^{-1} + c \]
+    where $A$ is a fixed 8x8 matrix and $c$ is a fixed 8-bit vector.
+\end{enumerate}
+
+\subsubsection{ShiftRows Operation}
+
+In the ShiftRows step, each row of the state is cyclically shifted to the left:
+\begin{itemize}
+    \item Row 0 is not shifted
+    \item Row 1 is shifted 1 byte to the left
+    \item Row 2 is shifted 2 bytes to the left
+    \item Row 3 is shifted 3 bytes to the left
+\end{itemize}
+
+\subsubsection{MixColumns Operation}
+
+In the MixColumns step, each column of the state is treated as a polynomial over $\mathbb{F}_{2^8}$ and multiplied by a fixed polynomial:
+
+\[ c(x) = 03x^3 + 01x^2 + 01x + 02 \pmod{x^4 + 1} \]
+
+This operation can be represented as a matrix multiplication:
+
+\[
+\begin{bmatrix}
+02 & 03 & 01 & 01 \\
+01 & 02 & 03 & 01 \\
+01 & 01 & 02 & 03 \\
+03 & 01 & 01 & 02
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+s_{0,j} \\
+s_{1,j} \\
+s_{2,j} \\
+s_{3,j}
+\end{bmatrix}
+\]
+
+This operation ensures diffusion, spreading the influence of each input bit over the entire ciphertext.
+
+\subsection{Key Expansion}
+
+The AES key expansion algorithm generates a series of round keys from the cipher key. For AES-128, it generates 11 128-bit round keys.
+
+\begin{algorithm}
+\caption{AES-128 Key Expansion}
+\begin{algorithmic}[1]
+\Procedure{ExpandKey}{$key[16]$}
+    \State $W[44]$ \Comment{44 32-bit words}
+    \For{$i = 0$ to $3$}
+        \State $W[i] \gets (key[4i], key[4i+1], key[4i+2], key[4i+3])$
+    \EndFor
+    \For{$i = 4$ to $43$}
+        \State $temp \gets W[i-1]$
+        \If{$i \bmod 4 = 0$}
+            \State $temp \gets SubWord(RotWord(temp)) \oplus Rcon[i/4]$
+        \EndIf
+        \State $W[i] \gets W[i-4] \oplus temp$
+    \EndFor
+    \State \textbf{return} $W$
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+Where:
+\begin{itemize}
+    \item SubWord applies the S-box to each byte of the input word
+    \item RotWord performs a cyclic permutation on the input word
+    \item Rcon[i] is the round constant for round i
+\end{itemize}
+
+\section{Security Considerations}
+
+The security of AES relies on several factors:
+
+\begin{enumerate}
+    \item \textbf{Confusion}: Provided by the SubBytes operation
+    \item \textbf{Diffusion}: Achieved through ShiftRows and MixColumns
+    \item \textbf{Key size}: Larger key sizes (192, 256 bits) provide increased security against brute-force attacks
+    \item \textbf{Number of rounds}: More rounds increase resistance to cryptanalysis
+\end{enumerate}
+
+As of 2024, AES remains secure against known attacks when properly implemented. However, ongoing research in quantum computing may pose future challenges to its security.
+
+
+\end{document}

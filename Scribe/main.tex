@@ -1,0 +1,254 @@
+\documentclass[11pt]{article}
+\usepackage[hmargin=1in,vmargin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb,amsfonts,url,sectsty,framed,tcolorbox,framed}
+\newcommand{\pf}{{\bf Proof: }}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newcommand{\qed}{\hfill \rule{2mm}{2mm}}
+
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{caption}
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent
+\rule{\textwidth}{1pt}
+\begin{center}
+{\bf [CS309] Introduction to Cryptography and Network Security}
+\end{center}
+Course Instructor: Dr. Dibyendu Roy \hfill Autumn 2024-2025\\
+Scribed by: Tanuj Saini (202251141) \hfill Lecture (Week 11)
+\\
+\rule{\textwidth}{1pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Signal Protocol}
+The Signal Protocol is a modern cryptographic protocol designed for secure end-to-end communication, leveraging advanced cryptographic techniques for optimal security.
+
+\section{Key Features}
+The following table highlights the primary features of the Signal Protocol:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|p{4cm}|p{8cm}|}
+\hline
+\textbf{Feature}                 & \textbf{Description}                                                                                     \\ \hline
+End-to-End Encryption            & Ensures only the communicating parties can read the messages, preventing third-party access.             \\ \hline
+Forward Secrecy                  & Guarantees that even if a session key is compromised, previous communications remain secure.             \\ \hline
+Post-Compromise Security         & Ensures that communications are secure even after a compromise occurs, protecting future messages.       \\ \hline
+Double Ratchet Algorithm         & Dynamically generates new session keys for each message, enhancing security and forward secrecy.         \\ \hline
+\end{tabular}
+\caption{Key Features of the Signal Protocol}
+\end{table}
+
+\section{Key Exchange Mechanics}
+The Signal Protocol combines \textbf{Elliptic Curve Diffie-Hellman (ECDH)} and the \textbf{Double Ratchet Algorithm} to establish secure keys.
+
+\subsection{Elliptic Curve Diffie-Hellman (ECDH) Key Exchange}
+The mechanism for ECDH-based key exchange is summarized below:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|p{4cm}|p{8cm}|}
+\hline
+\textbf{Step}              & \textbf{Description}                                                                                  \\ \hline
+Key Generation             & Each party generates a private key \(a\) and computes their public key \(g^a \mod p\).                \\ \hline
+Public Key Exchange        & Parties exchange public keys (\(g^a \mod p\) and \(g^b \mod p\)).                                     \\ \hline
+Shared Secret Computation  & Both parties calculate the shared secret as \(K = (g^b)^a \mod p = (g^a)^b \mod p\).                  \\ \hline
+\end{tabular}
+\caption{Steps in ECDH Key Exchange}
+\end{table}
+
+\subsection{Double Ratchet Algorithm}
+The Double Ratchet Algorithm builds on the shared secret from ECDH to derive new session keys for every message. It achieves:
+
+\begin{itemize}
+    \item \textbf{Key Derivation:} Uses a combination of hash functions and secrets to generate unique keys.
+    \item \textbf{State Updates:} Updates sender and receiver states with each message exchange.
+    \item \textbf{Resilience:} Provides forward and backward secrecy even under message loss.
+\end{itemize}
+
+
+\subsection{Double Ratchet Algorithm}
+Each party updates their keys independently with the following:
+\begin{align*}
+K_{send}' &= HMAC(K_{send}, \text{nonce}) \\
+K_{recv}' &= HMAC(K_{recv}, \text{nonce})
+\end{align*}
+Where $HMAC$ is the keyed-hash message authentication code, and the keys $K_{send}$ and $K_{recv}$ are updated with every message.
+
+
+\section{Alice and Bob Example}
+The communication process between Alice and Bob using the Signal Protocol is summarized below:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|p{3.5cm}|p{8.5cm}|}
+\hline
+\textbf{Step}               & \textbf{Description} \\ \hline
+\textbf{Initialization}     & Both Alice and Bob exchange their public keys: \\ 
+                            & \( A = g^a \mod p, \quad B = g^b \mod p \) \\ \hline
+\textbf{Shared Secret}      & They compute a shared secret: \\
+                            & \( S = B^a \mod p = A^b \mod p \) \\ \hline
+\textbf{Message Encryption} & Alice encrypts a message \( M \) using the shared secret: \\
+                            & \( C = E(S, M) \quad \text{(using AES or another symmetric encryption scheme)} \) \\ \hline
+\textbf{Message Decryption} & Bob decrypts the ciphertext to retrieve the original message: \\
+                            & \( M = D(S, C) \) \\ \hline
+\end{tabular}
+\caption{Steps in Secure Communication between Alice and Bob}
+\end{table}
+
+\section{Zero-Knowledge Proofs}
+The Signal Protocol uses zero-knowledge proofs (ZKPs) to verify identities without exposing private keys. The ZKP process is detailed below:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|p{3.5cm}|p{8.5cm}|}
+\hline
+\textbf{Step}         & \textbf{Description} \\ \hline
+\textbf{Commitment}   & Prover sends a commitment \( C \) to the verifier. \\ \hline
+\textbf{Challenge}    & Verifier sends a random challenge \( r \) to the prover. \\ \hline
+\textbf{Response}     & Prover computes and sends a response \( R \) such that: \\
+                      & \( C = H(R, r) \), where \( H \) is a cryptographic hash function. \\ \hline
+\end{tabular}
+\caption{Steps in Zero-Knowledge Proofs}
+\end{table}
+
+\section{Applications}
+The Signal Protocol is widely adopted in modern secure messaging applications. Key examples include:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|p{4cm}|p{8cm}|}
+\hline
+\textbf{Application}  & \textbf{Description} \\ \hline
+Signal Messenger      & Uses the protocol as its foundation for secure communication. \\ \hline
+WhatsApp              & Implements Signal Protocol for end-to-end encryption. \\ \hline
+Facebook Messenger    & Provides secret conversations using the protocol. \\ \hline
+\end{tabular}
+\caption{Applications of the Signal Protocol}
+\end{table}
+
+\section{Rivest Cipher (RC4)}
+The Rivest Cipher 4 (RC4) is a symmetric stream cipher widely recognized for its simplicity and speed. Key attributes of RC4 are summarized below:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|p{4cm}|p{8cm}|}
+\hline
+\textbf{Feature}      & \textbf{Description} \\ \hline
+Simplicity            & Easy to implement in both software and hardware. \\ \hline
+Speed                 & Efficient at generating a key stream. \\ \hline
+Stream Cipher         & Operates byte-by-byte, suitable for real-time encryption. \\ \hline
+Symmetric Key         & Uses a single key for both encryption and decryption. \\ \hline
+\end{tabular}
+\caption{Key Features of Rivest Cipher (RC4)}
+\end{table}
+
+\section{Conclusion}
+The Signal Protocol sets the gold standard for secure communication with innovative mechanisms like forward secrecy and post-compromise security. While RC4 has been widely used historically, its vulnerabilities have rendered it unsuitable for modern cryptographic systems.
+
+\section{RC4 Algorithm}
+The RC4 algorithm consists of two main components: the \textbf{Key Scheduling Algorithm (KSA)} and the \textbf{Pseudo-Random Generation Algorithm (PRGA)}. A summary of these components is provided below:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|p{4cm}|p{8cm}|}
+\hline
+\textbf{Component}             & \textbf{Description} \\ \hline
+Key Scheduling Algorithm (KSA) & Initializes and permutes the state array \( S \) based on the input key \( K \). \\ \hline
+Pseudo-Random Generation Algorithm (PRGA) & Generates the key stream used for encrypting plaintext by continuously updating the state array \( S \). \\ \hline
+\end{tabular}
+\caption{Components of the RC4 Algorithm}
+\end{table}
+
+\subsection{Key Scheduling Algorithm (KSA)}
+The KSA initializes the state array \( S \) and permutes it using the key \( K \). The steps are as follows:
+
+\begin{enumerate}
+    \item Initialize \( S[i] = i \), for \( i = 0, 1, \ldots, 255 \).
+    \item Initialize \( j = 0 \).
+    \item For \( i = 0 \) to \( 255 \), perform:
+    \[
+    j = (j + S[i] + K[i \mod \text{key length}]) \mod 256
+    \]
+    \[
+    \text{Swap } S[i] \text{ and } S[j].
+    \]
+\end{enumerate}
+
+\subsection{Pseudo-Random Generation Algorithm (PRGA)}
+The PRGA generates the key stream used for encrypting plaintext as follows:
+
+\begin{enumerate}
+    \item Initialize indices \( i = 0 \) and \( j = 0 \).
+    \item For each plaintext byte:
+    \begin{enumerate}
+        \item Increment \( i \): \( i = (i + 1) \mod 256 \).
+        \item Update \( j \): \( j = (j + S[i]) \mod 256 \).
+        \item Swap \( S[i] \) and \( S[j] \).
+        \item Generate key stream byte: \( K = S[(S[i] + S[j]) \mod 256] \).
+    \end{enumerate}
+\end{enumerate}
+
+\section{Alice and Bob Example}
+Alice and Bob can communicate securely using RC4. The process is summarized below:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|p{4cm}|p{8cm}|}
+\hline
+\textbf{Step}          & \textbf{Description} \\ \hline
+Key Agreement          & Alice and Bob agree on a shared secret key \( K \). \\ \hline
+Message Encryption     & Alice encrypts her plaintext \( P \) using the key stream:
+                        \[
+                        C = P \oplus K_{\text{stream}}
+                        \] \\ \hline
+Message Decryption     & Bob decrypts the ciphertext \( C \) using the key stream:
+                        \[
+                        P = C \oplus K_{\text{stream}}
+                        \] \\ \hline
+\end{tabular}
+\caption{Alice and Bob Communication Using RC4}
+\end{table}
+
+\section{Applications of RC4}
+Although RC4 is now deprecated, it was historically used in the following applications:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|p{4cm}|p{8cm}|}
+\hline
+\textbf{Application}   & \textbf{Description} \\ \hline
+SSL/TLS                & Used for securing web communications in early versions of SSL/TLS. \\ \hline
+WEP and WPA            & Applied in wireless security protocols for data encryption. \\ \hline
+File Encryption Tools  & Integrated into tools for encrypting sensitive files. \\ \hline
+\end{tabular}
+\caption{Historical Applications of RC4}
+\end{table}
+
+\section{Vulnerabilities and Deprecation}
+RC4 is no longer recommended due to several vulnerabilities:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|p{4cm}|p{8cm}|}
+\hline
+\textbf{Vulnerability}      & \textbf{Description} \\ \hline
+Key Stream Biases           & Early bytes of the key stream exhibit non-random patterns, making them susceptible to attacks. \\ \hline
+Weak Key Scheduling         & Certain keys result in predictable outputs, compromising security. \\ \hline
+Susceptibility to Attacks   & Vulnerable to known plaintext and statistical attacks. \\ \hline
+\end{tabular}
+\caption{Vulnerabilities of RC4}
+\end{table}
+
+\section{Conclusion}
+RC4 was a significant milestone in cryptography, widely adopted for its simplicity and speed. However, due to its vulnerabilities, it has been replaced by more secure algorithms like AES. Despite its deprecation, RC4 remains an important example for understanding stream ciphers.
+
+\end{document}

@@ -1,0 +1,207 @@
+\documentclass[11pt]{article}
+\usepackage[hmargin=1in,vmargin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb,amsfonts,url,sectsty,framed,tcolorbox,framed,amsthm, tikz}
+\newcommand{\pf}{{\bf Proof: }}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{algorithm}
+\newtheorem{example}{Example}
+\usepackage{algorithmic}
+\usepackage{titlesec}
+\setcounter{secnumdepth}{4}
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent
+\rule{\textwidth}{1pt}
+\begin{center}
+{\bf [CS309] Introduction to Cryptography and Network Security}
+\end{center}
+Course Instructor: Dr. Dibyendu Roy \hfill Autumn 2024-2025\\
+Scribed by: Tanuj Saini(202251141) \hfill  Week 9,10
+\\
+\rule{\textwidth}{1pt}
+
+\section{Diffie-Hellman Key Exchange}
+The Diffie-Hellman algorithm facilitates secure key exchange using public key cryptography, enabling two users to agree on a shared secret over an insecure channel. Consider a cyclic group $G = \langle g\rangle$ of prime order $P$. Alice selects a private key $a$ $(1 \leq a < P)$ and computes her public key $A = g^a \bmod P$. Similarly, Bob selects $b$ and computes $B = g^b \bmod P$. They exchange $A$ and $B$.
+
+\textbf{Key Computation:}\\
+Alice computes: $S = B^a \bmod P = g^{ab}$,\\
+Bob computes: $S = A^b \bmod P = g^{ab}$.\\
+Shared Secret Key: $S = g^{ab}$, which both parties independently compute.
+
+\textbf{Discrete Logarithm Problem:} Given $g^x \bmod P$, finding $x$ is computationally hard, ensuring the security of the exchange.
+
+\textit{Note:} The security of the Diffie-Hellman algorithm relies on the hardness of the discrete logarithm problem.
+
+\section{Modular Equations}
+We'll explore solving systems of linear equations to find $x$ in the form:
+\[ a \cdot x \equiv b \bmod m \quad \text{(Eq.1)} \]
+
+To begin, let's express Eq.1 as:
+\[ a \cdot x - m \cdot y = b \quad \text{(Eq.2)} \]
+where $y$ is an integer. Utilizing Bezout's Identity:
+\[ a \cdot x_0 + m \cdot y_0 = \gcd(a, m) \quad \text{(Eq.3)} \]
+where $x_0$ and $y_0$ can be determined using the Extended Euclidean Algorithm.
+
+Eq.2 is solvable if and only if $\gcd(a, m)$ divides $b$. Assuming $\gcd(a, m)$ divides $b$, we have:
+\[ t \cdot \gcd(a, m) = b \]
+
+By multiplying Eq.3 by $t$, we get:
+\[ a \cdot (t \cdot x_0) + m \cdot (t \cdot y_0) = t \cdot \gcd(a, m) \implies a \cdot X_0 + m \cdot Y_0 = b \]
+
+Hence, given an equation to solve, we first verify if $\gcd(a, m)$ divides $b$. If so, a solution exists. Then, we find $x_0$ and $y_0$ using the Extended Euclidean Algorithm and multiply them by $t = \frac{b}{\gcd(a,m)}$ to obtain $X_0$ and $Y_0$.
+
+Once $X_0$ and $Y_0$ are identified as solutions of Eq.2, we can substitute $x$ and $y$ as follows:
+\[ x = X_0 + \frac{m}{\gcd(a,m)} \cdot n \]
+\[ y = Y_0 + \frac{a}{\gcd(a,m)} \cdot n \]
+where $n$ is an integer.
+
+\section{Exploring Elliptic Curve Cryptography (ECC)}
+\begin{itemize}
+\item \textbf{Introduction:} While RSA offers a straightforward approach to cryptography with the Square and Multiply Algorithm, Elliptic Curve Cryptography (ECC) introduces a novel concept.
+\item \textbf{Computations on Curves:} ECC operates on elliptic curves rather than integers, leading to the development of modern cryptographic techniques.
+\item \textbf{Key Exchange:} ECC employs Elliptic Curve Diffie-Hellman (ECDH) for secure key exchange.
+\item \textbf{Digital Signatures:} Signatures in ECC are generated using Elliptic Curve Digital Signature Algorithm (ECDSA).
+\item \textbf{Security Benefits:} ECC's utilization of elliptic curves enables better security using smaller prime numbers.
+\end{itemize}
+
+Let's define two real numbers $a$ and $b$ such that:
+\[ a, b \in \mathbb{R} \text{ and } 4a^3 + 27b^2 \neq 0 \]
+
+Consider the curve:
+\[ y^2 = x^3 + ax + b \]
+where $(x, y) \in \mathbb{R}^2$. This curve is known as an Elliptic Curve.
+
+\subsection{Elliptic Curve Mathematics}
+\[ y^2 = x^3 + ax + b \]
+\[ 4a^3 + 27b^2 \neq 0 \]
+
+Let us consider two points $P(x_1, y_1)$ and $Q(x_2, y_2)$. We have three cases:
+\begin{enumerate}
+\item $x_1 \neq x_2, y_1 \neq y_2$
+\item $x_1 = x_2, y_1 = -y_2$
+\item $x_1 = x_2, y_1 = y_2$
+\end{enumerate}
+
+\subsection{Elliptic Curve Diffie-Hellman (ECDH)}
+Let us consider a scenario where Alice and Bob want to exchange messages. They have a curve $E$ and a point $P$, and $(E, P)$ is public.
+
+\section{Discrete Logarithm Problem}
+The \textbf{Discrete Logarithm Problem (DLP)} is a foundational problem in cryptography that underpins the security of many algorithms, including the Diffie-Hellman key exchange and the Digital Signature Algorithm (DSA). It involves finding the exponent $x$ in the equation:
+\[ g^x \equiv y \pmod{p} \]
+
+where:
+\begin{itemize}
+\item $g$ is a generator of the group,
+\item $p$ is a large prime number, and
+\item $y$ is a known value.
+\end{itemize}
+
+\subsection{Why DLP is Hard}
+The DLP is computationally hard because:
+\begin{itemize}
+\item There is no efficient algorithm for solving it in general cases within polynomial time.
+\item It becomes infeasible as the prime $p$ grows larger (e.g., 2048-bit primes).
+\end{itemize}
+
+\subsection{Mathematical Properties}
+\begin{enumerate}
+\item $g^a \cdot g^b \equiv g^{a+b} \pmod{p}$ (Closure under multiplication)
+\item $g^{-a} \cdot g^a \equiv 1 \pmod{p}$ (Existence of inverse)
+\item Exponentiation in modular arithmetic is easy, but finding $x$ from $g^x$ is hard
+\end{enumerate}
+
+\section{Kerberos Authentication Protocol}
+Kerberos is a secure, third-party authentication protocol designed for distributed networks. It provides mutual authentication between users and services by relying on a trusted third-party Key Distribution Center (KDC).
+
+\subsection{Key Components}
+\begin{enumerate}
+\item \textbf{Key Distribution Center (KDC):} A trusted server that manages authentication by issuing tickets. It has two main components:
+\begin{itemize}
+\item \textbf{Authentication Server (AS):} Verifies users and issues a Ticket Granting Ticket (TGT).
+\item \textbf{Ticket Granting Server (TGS):} Issues service-specific tickets based on the TGT.
+\end{itemize}
+\item \textbf{Principal:} A user or service that participates in Kerberos authentication.
+\item \textbf{Ticket:} An encrypted data structure containing user credentials, session keys, and timestamps.
+\end{enumerate}
+
+\subsection{Authentication Workflow}
+The Kerberos authentication process involves the following steps:
+\begin{enumerate}
+\item \textbf{Login and AS Request:}
+\begin{itemize}
+\item The user enters their credentials (username and password).
+\item The client sends an authentication request to the AS, encrypted using the user's password-derived key.
+\end{itemize}
+
+\item \textbf{Ticket Granting Ticket (TGT):}
+\begin{itemize}
+\item The AS verifies the user's credentials and generates a TGT.
+\item The TGT is encrypted using the KDC's secret key and sent to the client.
+\end{itemize}
+
+\item \textbf{Service Request to TGS:}
+\begin{itemize}
+\item The client presents the TGT to the TGS along with a service request.
+\item The TGS validates the TGT and issues a service ticket.
+\end{itemize}
+
+\item \textbf{Accessing the Service:}
+\begin{itemize}
+\item The client sends the service ticket to the requested service.
+\item The service validates the ticket and grants access.
+\end{itemize}
+\end{enumerate}
+
+\subsection{Security Features}
+\begin{itemize}
+\item Mutual Authentication: Both the client and the service verify each other.
+\item Replay Protection: Time-stamped tickets prevent reuse of old tickets.
+\item Session Keys: Unique keys are generated for each session, ensuring secure communication.
+\end{itemize}
+
+\subsection{Advantages of Kerberos}
+\begin{itemize}
+\item Centralized authentication improves efficiency and security.
+\item Mutual authentication ensures trust between users and services.
+\item Time-stamped tickets mitigate replay attacks.
+\end{itemize}
+
+\subsection{Limitations of Kerberos}
+\begin{itemize}
+\item Relies on synchronized clocks; discrepancies can lead to authentication failure.
+\item If the KDC is compromised, the entire system is at risk.
+\item Initial password entry can expose credentials if not securely transmitted.
+\end{itemize}
+
+\subsection{Kerberos Ticket Structure}
+A typical Kerberos ticket contains:
+\begin{itemize}
+\item Principal's identity (user or service)
+\item Session key for secure communication
+\item Ticket lifetime (start and expiry times)
+\item Flags indicating ticket properties (e.g., renewable, forwardable)
+\end{itemize}
+
+\subsection{Kerberos Versions}
+\begin{itemize}
+\item \textbf{Kerberos v4:} Earlier version, used DES for encryption, now considered outdated.
+\item \textbf{Kerberos v5:} Enhanced version, supports various encryption types, cross-realm authentication, and extended ticket properties.
+\end{itemize}
+
+\subsection{Applications of Kerberos}
+\begin{itemize}
+\item Secure login for distributed systems
+\item Single Sign-On (SSO) implementation in corporate networks
+\item Securing services such as email, file servers, and databases
+\end{itemize}
+
+\textbf{Kerberos ensures secure, efficient, and reliable authentication in distributed environments.}
+
+\end{document}

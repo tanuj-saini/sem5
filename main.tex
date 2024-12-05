@@ -1,0 +1,123 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% Packages from the template
+\usepackage{cite}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\begin{document}
+
+\title{Heuristic Functions and Non-Classical Search Algorithms for Marble Solitaire and SAT Problems}
+
+\author{\IEEEauthorblockN{Author Name}
+\IEEEauthorblockA{Department of Computer Science\\
+University Name\\
+City, Country\\
+Email: author.email@example.com}}
+
+\maketitle
+
+\begin{abstract}
+This study investigates the use of heuristic functions and non-classical search algorithms to effectively reduce search space for tackling large-scale issues. Three different tasks are highlighted: Marble Solitaire, k-SAT, and 3-SAT. Heuristic-guided search techniques, such as Best-First Search and A*, are applied to each problem. The report describes how the challenges were formulated, what heuristics were used, what algorithms were implemented, and provides an analysis of the outcomes.
+\end{abstract}
+
+\section{Introduction}
+Efficient solutions are necessary for large state-space search problems in order to reduce computing resources such as time and money. Heuristic functions are essential in directing these searches and expediting the procedure by calculating the amount of work required to attain a target state. This paper examines the use of heuristic functions in three particular problems—Marble Solitaire, k-SAT, and 3-SAT—that provide formidable obstacles to search optimization. Non-classical search algorithms like A* and Best-First Search are used to address these problems by attempting to minimize the state space and improve search efficiency overall. Specifically, customized heuristic functions are presented to enhance the accuracy and speed of the search procedure, offering more profound understandings of how these tactics might be applied to address challenging computational problems.
+
+\section{Problem 1: Marble Solitaire}
+\subsection{Problem Description}
+In the game Marble Solitaire, the object is to clear the board of all the marbles except for one by leaping over nearby stones. The last marble should be placed in the middle of the board. Because there are so many different ways to arrange the boards in Marble Solitaire, the state space is large. Thus, in order to effectively locate the best answer, heuristic functions and search algorithms are crucial.
+
+\subsection{Heuristic Functions}
+Two heuristic functions were developed for Marble Solitaire:
+\begin{itemize}
+    \item \textbf{Heuristic 1: Number of Marbles Remaining} - This heuristic counts the number of marbles remaining on the board. The objective is to get to a point where there is only one marble left. Reduced marbles indicate closerness to the solution, offering an easy-to-use but reliable indicator.
+    \item \textbf{Heuristic 2: Manhattan Distance} - This heuristic determines how far each surviving marble is from the board's center in Manhattan distance. Assuming that marbles in the center have a higher probability of contributing to the ultimate solution, this heuristic directs the search toward consolidating marbles toward the center.
+\end{itemize}
+
+\subsection{Search Algorithm Implementations}
+\begin{itemize}
+    \item \textbf{Priority Queue-Based Search:} The search through the state space was controlled using a priority queue, where states were ranked based on their combined path cost and heuristic values. This method ensures that states with lower accumulated costs are prioritized for exploration.
+    \item \textbf{A* Search Algorithm:} The A* algorithm was constructed using the cost function $f(n) = g(n) + h(n)$, where $g(n)$ represents the path cost from the initial state to the current state, and $h(n)$ is the heuristic estimate of the remaining distance to the goal.
+\\
+
+\begin{algorithm}
+\caption{A* using Manhattan Distance Heuristic}
+\begin{algorithmic}[1]
+\State Initialize priority queue $Q$ with initial state
+\State $g(n) \gets 0$ for initial state
+\State $h(n) \gets$ heuristic estimate for initial state
+\State $f(n) \gets g(n) + h(n)$ for initial state
+\While {$Q$ is not empty}
+    \State $n \gets$ node in $Q$ with lowest $f(n)$
+    \If {$n$ is the goal state}
+        \State \Return Solution path
+    \EndIf
+    \For {each successor $m$ of $n$}
+        \State $g(m) \gets g(n) +$ cost to move from $n$ to $m$
+        \State $h(m) \gets$ heuristic estimate for state $m$
+        \State $f(m) \gets g(m) + h(m)$
+        \State Add $m$ to $Q$
+    \EndFor
+\EndWhile
+\State \Return No solution found
+\end{algorithmic}
+\end{algorithm}
+
+\end{itemize}
+\subsection{Results}
+Although the Manhattan Distance heuristic consistently produced faster results by directing the search toward the board's center, both algorithms demonstrated good performance. Compared to Best-First Search, A* search using the Manhattan heuristic required fewer node explorations to get the best solution.
+
+\section{Problem 2: k-SAT}
+\subsection{Problem Description}
+The k-SAT problem is a well-known NP-complete problem in Boolean logic, which involves determining if a given Boolean formula composed of clauses with exactly k literals can be satisfied. Every clause is made up of a disjunction of k literals, which can be either a variable or its opposite.
+
+\subsection{Heuristic Functions}
+\begin{itemize}
+    \item \textbf{Clause Satisfaction Heuristic:} This heuristic counts the number of clauses that are satisfied under a specific variable assignment in order to evaluate the progress made towards solving the k-SAT problem.
+\end{itemize}
+
+\subsection{Search Algorithm Implementations}
+\begin{itemize}
+    \item \textbf{Random Assignment Generator:} Truth values are assigned to variables at random, and the heuristic counts the number of sentences that are satisfied with the current assignment.
+    \item \textbf{Best-First Search:} A priority queue is utilized to investigate variable assignments that optimize the quantity of satisfied clauses.
+\end{itemize}
+
+\subsection{Results}
+Smaller versions of the k-SAT issue were successfully solved reasonably rapidly using the Best-First Search algorithm. However, frequent backtracking was noted as the problem size rose, especially as the number of clauses increased.
+
+\section{Problem 3: 3-SAT}
+\subsection{Problem Description}
+The 3-SAT problem is a specific instance of the k-SAT problem, in which every clause in the Boolean formula is made up of precisely three literals, which may be variables or their negations.
+
+\subsection{Heuristic Functions}
+\begin{itemize}
+    \item \textbf{Clause Satisfaction Heuristic (Adapted for 3-SAT):} This heuristic counts the number of satisfied clauses according to a specified variable assignment, modified to consider the fixed clause size of three literals.
+\end{itemize}
+
+\subsection{Search Algorithm Implementations}
+\begin{itemize}
+    \item \textbf{Hill-Climbing Algorithm:} Starts with a random assignment and iteratively improves it by flipping variable values to increase the number of satisfied clauses.
+    \item \textbf{Beam Search Algorithm:} Maintains multiple potential solutions, generating and evaluating neighbors for each candidate, keeping only the most promising ones within a predetermined beam width.
+\end{itemize}
+
+\subsection{Results}
+Hill-Climbing worked effectively for smaller problems but often became trapped in local optima for larger problems. Beam Search, with a broader beam width, produced better results by simultaneously examining more possible solutions.
+
+\section{Results and Analysis}
+\subsection{A* vs. Best-First Search}
+The A* algorithm proved most efficient for Marble Solitaire, effectively balancing path cost with heuristic guidance, leading to quicker solutions. In contrast, while Best-First Search effectively explores high-priority nodes, it often requires more backtracking and may miss optimal paths due to its reliance on heuristics.
+
+\subsection{k-SAT and 3-SAT Comparisons}
+Beam Search excelled, particularly in larger instances, by maintaining multiple candidate solutions that allowed for broader exploration of the search space. The Variable Neighborhood Descent (VND) algorithm, using three neighborhood functions, demonstrated the highest penetrance for 3-SAT problems through its adaptable search strategy. Although Hill-Climbing is quick, it has the lowest penetrance due to frequent entrapment in local optima.
+
+\begin{thebibliography}{1}
+\bibitem{russell2020} S. Russell and P. Norvig, ``Artificial Intelligence: A Modern Approach,'' 4th ed. Pearson, 2020.
+\bibitem{khemani2013} D. Khemani, ``A First Course in Artificial Intelligence,'' McGraw Hill Education, 2013.
+\end{thebibliography}
+\end{document}
