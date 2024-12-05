@@ -1,0 +1,153 @@
+\documentclass[11pt]{article}
+\usepackage[hmargin=1in,vmargin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{textgreek}
+\usepackage{empheq}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsmath,amssymb,amsfonts,url,sectsty,framed,tcolorbox,framed}
+\newcommand{\pf}{{\bf Proof: }}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newcommand{\qed}{\hfill \rule{2mm}{2mm}}
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent
+\rule{\textwidth}{1pt}
+\begin{center}
+\bf [CS304] Introduction to Cryptography and Network Security
+\end{center}
+Course Instructor: Dr. Dibyendu Roy \hfill Winter 2023-2024\\
+Scribed by: Archit Verma (202151192) \hfill Lecture (Week 9)
+\\
+\rule{\textwidth}{1pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%write here
+\section{Foundations of Secure Communication}
+
+
+
+\subsection{Introduction}
+Modern cryptography and network security are crucial for ensuring secure communication over potentially insecure channels. Confidentiality, integrity, and authenticity are fundamental aspects of secure data transmission.
+
+\subsection{Mathematical Underpinnings}
+\begin{itemize}
+    \item \textbf{Modular Arithmetic:} Operations like addition, subtraction, multiplication, and exponentiation in a finite set. For example, in modular arithmetic, $a \equiv b \pmod{n}$ means that $a$ and $b$ have the same remainder when divided by $n$.
+    \item \textbf{Number Theory:} Includes prime numbers, modular inverses, Euler’s totient function, etc. For instance, the Euler's totient function $\Phi(n)$ counts the number of positive integers less than $n$ that are coprime to $n$.
+    \item \textbf{Computational Complexity:} Analysis of algorithms’ efficiency, especially relevant in cryptographic protocols. It involves understanding the time and space complexity of algorithms, which is crucial for evaluating their security and practicality.
+\end{itemize}
+
+\section{Diffie-Hellman Key Exchange}
+\subsection{Public-Key Cryptography}
+\begin{itemize}
+    \item Utilizes asymmetric key pairs: public and private keys. Public keys are distributed publicly, while private keys are kept secret.
+    \item Public key for encryption, private key for decryption. This enables secure communication without the need for both parties to share a secret key beforehand.
+\end{itemize}
+
+\subsection{Diffie-Hellman Key Exchange Protocol}
+\begin{itemize}
+    \item Allows two parties to establish a shared secret over an insecure channel. This is achieved by each party generating a public-private key pair and exchanging public keys.
+    \item Based on modular exponentiation: $g^a \mod n$, where $g$ is a generator of a multiplicative group modulo $n$.
+    \item Alice and Bob exchange public keys securely without prior agreement. They then use their private keys and the received public keys to compute the shared secret.
+    \item Shared secret key generation: $g^{ab} \mod n$, where $a$ is Alice's private key and $b$ is Bob's private key.
+\end{itemize}
+
+\section{Discrete Logarithm Problem}
+\begin{itemize}
+    \item Involves finding $x$ in $g^x \equiv y \mod n$, where $g$ and $n$ are known, and $y$ is given. This problem is computationally hard in certain groups, such as the multiplicative group modulo a large prime.
+    \item Fundamental challenge in computational cryptography. Solving the discrete logarithm problem efficiently is crucial for breaking many cryptographic systems, including Diffie-Hellman key exchange and DSA.
+    \item Time complexity: $O(\sqrt{n})$ with traditional methods. However, more efficient algorithms, such as the Number Field Sieve, can reduce the complexity further.
+    \item Used in various cryptographic algorithms like Diffie-Hellman and DSA. The security of these algorithms relies on the computational difficulty of solving the discrete logarithm problem.
+\end{itemize}
+
+\section{Mitigating Man-in-the-Middle Attacks}
+\subsection{Endpoint Authentication}
+\begin{itemize}
+    \item Digital signatures ensure the authenticity and integrity of messages. A digital signature is created by encrypting a hash of the message with the sender's private key.
+    \item Utilize public-key cryptography: Sign with private key, verify with public key. This ensures that only the owner of the private key could have created the signature.
+\end{itemize}
+
+\subsection{Secure Key Exchange Protocols}
+\begin{itemize}
+    \item Diffie-Hellman key exchange: Establish shared secret securely. This protocol allows two parties to agree on a shared secret over an insecure channel without the risk of eavesdropping or tampering by an attacker.
+    \item RSA key exchange: Encrypt shared secret with public key. In this protocol, a shared secret is encrypted with the recipient's public key, ensuring that only the recipient, who possesses the corresponding private key, can decrypt and obtain the shared secret.
+\end{itemize}
+
+\section{Euler’s Totient Function and Theorem}
+\subsection{Definition and Properties}
+\begin{itemize}
+    \item Definition: $\Phi(m)$ counts coprime integers less than $m$. For example, $\Phi(10) = 4$ because there are four positive integers less than $10$ that are coprime to $10$: $1, 3, 7, 9$.
+    \item Properties:
+    \begin{itemize}
+        \item $\Phi(p) = p - 1$ for prime $p$. This is because all positive integers less than a prime $p$ are coprime to $p$.
+        \item $\Phi(pq) = (p - 1)(q - 1)$ for primes $p$ and $q$. This property follows from the fact that $\Phi(pq)$ counts the number of positive integers less than $pq$ that are coprime to $pq$.
+        \item $\Phi(p^k) = p^k - p^{k-1}$ for prime $p$ and positive integer $k$. This property arises from the fact that out of $p^k$ positive integers less than $p^k$, exactly $p^{k-1}$ are divisible by $p$, leaving $p^k - p^{k-1}$ coprime integers.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Euler’s Theorem}
+$a^{\Phi(m)} \equiv 1 \mod m$ for coprime $a$ and $m$. This theorem provides a useful relationship between the totient function and modular exponentiation, which is essential in various cryptographic algorithms, including RSA encryption.
+
+\section{The RSA Cryptosystem}
+\subsection{Key Generation}
+\begin{itemize}
+    \item Choose two large prime numbers $p$ and $q$. These primes should be kept secret.
+    \item Compute modulus $n = pq$ and Euler’s totient function $\Phi(n) = (p - 1)(q - 1)$.
+    \item Choose encryption exponent $e$ coprime to $\Phi(n)$, typically a small prime such as $65537$.
+    \item Compute decryption exponent $d$ such that $ed \equiv 1 \mod \Phi(n)$, using the extended Euclidean algorithm.
+\end{itemize}
+
+\subsection{Encryption and Decryption}
+\begin{itemize}
+    \item Encryption: $C = M^e \mod n$, where $C$ is the ciphertext and $M$ is the plaintext message. This operation raises the plaintext message to the power of the encryption exponent modulo $n$.
+    \item Decryption: $M = C^d \mod n$, where $M$ is the recovered plaintext message. This operation raises the ciphertext to the power of the decryption exponent modulo $n$.
+\end{itemize}
+
+\section{Digital Signatures}
+\subsection{Signature Generation}
+\begin{itemize}
+    \item Sender hashes the message to create a digest. A hash function maps an arbitrary-length input to a fixed-size output.
+    \item Sender encrypts the digest with their private key to create the signature. This ensures that the signature is unique to the sender and the message.
+\end{itemize}
+
+\subsection{Verification}
+\begin{itemize}
+    \item Receiver decrypts the signature with the sender’s public key to obtain the digest. Decrypting the signature using the sender's public key ensures that the signature was indeed created by the sender.
+    \item Receiver hashes the received message to create a digest. By hashing the received message and comparing it with the decrypted digest, the receiver can verify the authenticity and integrity of the message.
+    \item If the two digests match, the signature is valid. This implies that the message has not been tampered with and was indeed signed by the sender.
+\end{itemize}
+
+\subsection{Non-Repudiation}
+Signer cannot deny the authenticity of the signature. Non-repudiation is a property of digital signatures that ensures that the signer cannot later deny having signed the message.
+
+\section{Computation on Encrypted Data}
+\subsection{Homomorphic Properties of RSA}
+\begin{itemize}
+    \item Allows performing operations on ciphertexts without decrypting them. This property enables computation on encrypted data without revealing the plaintext, which is crucial for privacy-preserving computation.
+    \item Enables computation on encrypted data without revealing the plaintext. For example, given ciphertexts $C_1$ and $C_2$ of messages $M_1$ and $M_2$ respectively, $C_1 \times C_2 \equiv (M_1 \times M_2)^e \mod n$. This property facilitates secure multiparty computation and privacy-preserving data analysis.
+\end{itemize}
+
+\section{Advanced Cryptographic Operations}
+\subsection{Secure Multiparty Computation}
+\begin{itemize}
+    \item Allows multiple parties to jointly compute a function over their inputs while keeping those inputs private. This is achieved using cryptographic protocols that ensure that each party learns only the output of the computation, without revealing their individual inputs.
+    \item Ensures privacy and security in collaborative scenarios. Secure multiparty computation is used in scenarios where multiple parties need to collaborate on a computation while keeping their inputs private, such as in financial transactions or medical research.
+\end{itemize}
+
+\subsection{Zero-Knowledge Proofs}
+\begin{itemize}
+    \item Prove the validity of a statement without revealing any information beyond the statement’s truth. Zero-knowledge proofs allow a prover to convince a verifier of the truth of a statement without revealing any additional information beyond the fact that the statement is true.
+    \item Used in authentication protocols and cryptographic protocols. Zero-knowledge proofs are used in various cryptographic applications, including authentication protocols, secure computation, and privacy-preserving identity systems.
+\end{itemize}
+
+\subsection{Post-Quantum Cryptography}
+\begin{itemize}
+    \item Developing cryptographic algorithms resistant to quantum computer attacks. Post-quantum cryptography is an area of research focused on developing cryptographic algorithms that remain secure even in the presence of powerful quantum computers.
+    \item Addresses vulnerabilities of traditional cryptographic algorithms to quantum computing. Traditional cryptographic algorithms, such as RSA and ECC, are vulnerable to attacks from quantum computers due to their reliance on mathematical problems that can be efficiently solved by quantum algorithms. Post-quantum cryptography aims to develop alternative cryptographic primitives that are resistant to quantum attacks.
+    \item Examples include lattice-based cryptography, hash-based cryptography, and code-based cryptography. These are cryptographic schemes that rely on mathematical problems believed to be hard even for quantum computers, providing security against quantum attacks.
+\end{itemize}
+
+\end{document}

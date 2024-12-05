@@ -1,0 +1,90 @@
+\documentclass[11pt]{article}
+\usepackage[hmargin=1in,vmargin=1in]{geometry}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb,amsfonts,url,sectsty,framed,tcolorbox,framed}
+\newcommand{\pf}{{\bf Proof: }}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newcommand{\qed}{\hfill \rule{2mm}{2mm}}
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent
+\rule{\textwidth}{1pt}
+\begin{center}
+{\bf [CS304] Introduction to Cryptography and Network Security}
+\end{center}
+Course Instructor: Dr. Dibyendu Roy \hfill Winter 2023-2024\\
+Scribed by: Your name (202151192) \hfill Lecture (Week 1)
+\\
+\rule{\textwidth}{1pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%write here
+\section*{Introduction}
+Cryptography, the practice of safeguarding communication and information through codes and ciphers, is pivotal for ensuring the confidentiality, integrity, and authenticity of data in various applications.
+
+\section*{Cryptography}
+\begin{itemize}
+    \item Cryptography involves devising codes and algorithms to encrypt information, rendering it unreadable to unauthorized parties.
+    \item The primary objective of cryptography is to facilitate secure communication and shield data from unauthorized access or tampering.
+\end{itemize}
+
+\subsection*{Cryptanalysis}
+\begin{itemize}
+    \item Cryptanalysis, the science of analyzing and breaking codes and ciphers, aims to decipher encrypted messages without the proper key.
+    \item The ongoing interplay between cryptography and cryptanalysis propels the evolution of secure communication methods.
+\end{itemize}
+
+\subsection*{Symmetric Cryptography}
+\begin{itemize}
+    \item Symmetric cryptography, also known as secret-key cryptography, employs the same key for both encryption and decryption.
+\end{itemize}
+
+\subsection*{Asymmetric Cryptography}
+\begin{itemize}
+    \item Asymmetric cryptography, or public-key cryptography, utilizes a pair of keys: public and private keys.
+    \item Information encrypted with the public key can only be decrypted with the corresponding private key, and vice versa.
+\end{itemize}
+
+\section*{Cryptographic Functions}
+Cryptography extends beyond mere encoding and decoding; it encompasses crucial functions ensuring the security and reliability of communication. Key operations integral to cryptographic systems include:
+
+\subsection*{Confidentiality}
+Confidentiality ensures sensitive information remains private and accessible only to authorized parties. Cryptographic techniques, such as encryption, transform data into an unreadable format for those without the appropriate decryption key.
+
+\subsection*{Integrity}
+Integrity guarantees data remains unaltered and trustworthy during transmission or storage. In cryptography, integrity is maintained through mechanisms like hash functions.
+
+\subsection*{Authentication}
+Authentication verifies the identity of communicating parties and ensures the message's origin. Cryptographic functions, like digital signatures, play a vital role in authentication by confirming the sender's identity and validating the message's integrity, preventing unauthorized entities from masquerading as legitimate sources.
+
+\subsection*{Non-repudiation}
+Non-repudiation prevents individuals from denying their involvement in a communication or transaction. Digital signatures provide evidence of the message's origin and authenticity, strengthening accountability in digital interactions.
+
+\section*{Different Types of Ciphers}
+
+\subsection*{Caesar Cipher}
+The Caesar Cipher is a substitution cipher shifting each letter in the plaintext by a fixed number of positions using modular arithmetic.
+
+\subsection*{Transposition Cipher}
+Transposition ciphers rearrange characters in the plaintext without altering their identities through permutation.
+
+\subsection*{Substitution Cipher}
+Substitution ciphers replace each plaintext character with another according to a predefined key.
+
+\subsection*{Plaintext Cipher}
+Plaintext ciphers introduce complexity or obfuscation without altering the message's content.
+
+\subsection*{Affine Cipher}
+The Affine Cipher combines linear and modular arithmetic, using two functions for multiplication and addition, providing a more complex substitution method than the Caesar Cipher.
+
+\subsection*{Extended Euclidean Algorithm}
+The Extended Euclidean Algorithm, used in the Affine Cipher, finds the modular inverse of a number, crucial for decryption in asymmetric encryption systems.
+
+\subsection*{Playfair Cipher}
+The Playfair Cipher encrypts digraphs based on their positions in a key table, typically a 5x5 grid of letters. I and J are treated the same, and the encryption process involves rules for handling pairs of letters within the same row, column, or rectangle.
+
+\end{document}
